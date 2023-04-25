@@ -1,5 +1,4 @@
 #include "main.h"
-#include "6-abs.c"
 #include <stdio.h>
 
 /**
