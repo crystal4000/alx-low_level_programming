@@ -22,11 +22,7 @@ int main(void)
 		b = c;
 		count++;
 
-		if (count < 98)
-		{
-			printf(", ");
-		}
 	}
-	printf("\n");
+	printf("%.0f\n", a + b);
 	return (0);
 }
