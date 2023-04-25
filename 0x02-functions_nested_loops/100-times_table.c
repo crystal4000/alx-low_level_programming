@@ -8,9 +8,10 @@
 
 void print_times_table(int n)
 {
-	int i, j;
+	int i;
+	int j;
 
-	if (n < 0 || n >15)
+	if (n < 0 || n > 15)
 	{
 		return;
 	}
@@ -22,6 +23,7 @@ void print_times_table(int n)
                         
 			if (j == 0)
 			{
+				_putchar(' ');
 				_putchar(product / 10 + '0');
 				_putchar(product % 10 + '0');
 			} else
@@ -41,7 +43,7 @@ void print_times_table(int n)
 			} else
 			{
 				_putchar(product / 10 + '0');
-				_putchar((product / 100) % 10 + '0');
+				_putchar((product / 10) % 10 + '0');
 				_putchar(product % 10 + '0');
 			}
 		}
