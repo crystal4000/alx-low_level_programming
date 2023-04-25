@@ -11,8 +11,7 @@ int main(void)
 	long int b = 2;
 	long int c;
 
-	printf("%ld, %ld ", a, b);
-	
+	printf("%ld, %ld, ", a, b);
 	for (i = 2; i < 50; i++)
 	{
 		c = a + b;
@@ -29,7 +28,7 @@ int main(void)
 		}
 
 		a = b;
-		b= c;
+		b = c;
 	}
 	return (0);
 }
