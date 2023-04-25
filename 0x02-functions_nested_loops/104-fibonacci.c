@@ -6,22 +6,27 @@
  */
 int main(void)
 {
-	int a = 1;
-	int b = 2;
+	float a = 1;
+	float b = 2;
 	int count = 2;
-	int c;
+	float c;
 
-	printf("%d, %d, ", a, b);
+	printf("%.0f, %.0f, ", a, b);
 	while (count < 98)
 	{
 		c = a + b;
 
-		printf("%d, ", c);
+		printf("%.0f, ", c);
 
 		a = b;
 		b = c;
 		count++;
+
+		if (counter < 98)
+		{
+			printf(", ");
+		}
 	}
-	printf("%d\n", a + b);
+	printf("\n");
 	return (0);
 }
