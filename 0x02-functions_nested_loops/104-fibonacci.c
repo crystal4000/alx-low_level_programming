@@ -12,7 +12,6 @@ int main(void)
 	int c;
 
 	printf("%d, %d, ", a, b);
-	
 	while (count < 98)
 	{
 		c = a + b;
