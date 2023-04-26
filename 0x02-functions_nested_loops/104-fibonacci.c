@@ -6,25 +6,17 @@
  */
 int main(void)
 {
-	int counter = 2;
+	int i, current, previous, temp;
 
-	float a = 1;
-	float b = a + 1;
-	float c = a + b;
-
-	printf("%.0f, ", a);
-	printf("%.0f, ", b);
-	while (counter < 98)
+	current = 2;
+	previous = 1;
+	printf("%d, %d", previous, current);
+	for (i = 3; i <= 98; i++)
 	{
-		counter++;
-		printf("%.0f", c);
-		a = b;
-		b = c;
-		c = a + b;
-		if (counter < 98)
-		{
-			printf(", ");
-		}
+		temp = current;
+		current = current + previous;
+		previous = temp;
+		printf(", %d", current);
 	}
 	printf("\n");
 	return (0);
