@@ -7,40 +7,31 @@
  */
 char *leet(char *str)
 {
-	/*Pointer to the oringinal string*/
 	char *ptr = str;
+	char *leetChars = "aAeEoOtTlL";
+	char *leetReplacements = "4433007711";
+	int i;
+	int found;
 
-	while (*ptr != '\0')
+	while (*ptr)
 	{
-		/*varibale to store encoded character */
-		int encode = 0;
+		i = 0;
+		found = 0;
 
-		/*Check if current character is 'a' or 'A' */
-		if (*ptr == 'a' || *ptr == 'A')
-			encode = '4';
-
-		/*Check if current character is 'e' or 'E' */
-		else if (*ptr == 'e' || *ptr == 'E')
-			encode = '3';
-
-		/*Check if current character is 'o' or 'O' */
-		else if (*ptr == 'o' || *ptr == 'O')
-			encode = '0';
-
-		/*Check if current chrarcter is 't' or 'T'*/
-		else if (*ptr == 't' || *ptr == 'T')
-			encode = '7';
-
-		/*Check if current character is 'l' or 'L' */
-		else if (*ptr == 'l' || *ptr == 'L')
-			encode = '7';
-
-		/*If current cjaracter matches any encoding, replace it*/
-		if (encode != 0)
+		while (leetChars[i])
 		{
-			*ptr = encode;
+			if (*ptr == leetChars[i])
+			{
+				*ptr = leetReplacements[i];
+				found = 1;
+				break;
+			}
+			i++;
 		}
-		ptr++;
+		if (!found)
+		{
+			ptr++;
+		}
 	}
 	return (str);
 }
