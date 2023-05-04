@@ -1,39 +1,26 @@
 #include "main.h"
 /**
  * leet - leet
- * @str: string
+ * @s: string
  *
  * Return: char value
  */
-char *leet(char *str)
+char *leet(char *s)
 {
-	/*Pointer to the oringinal string*/
-	char *ptr = str;
-	char *leetChars = "aAeEoOtTlL";
-	char *leetReplacements = "4433007711";
+	char alphaArr[] = "a4A4e3E3o0O0t7T7l1L1";
 	int i;
-	int found;
+	int j;
 
-	while (*ptr)
+	for (i = 0; s[i] != '\0'; i++)
 	{
-		i = 0;
-		found = 0;
-
-		while (leetChars[i])
+		for (j = 0; alphaArr[j] != '\0'; j++)
 		{
-			if (*ptr == leetChars[i])
+			if (s[i] == alphaArr[j])
 			{
-				*ptr = leetReplacements[i];
-				found = 1;
+				s[i] = alphaArr[j + 1];
 				break;
 			}
-			i++;
-		}
-
-		if (!found)
-		{
-			ptr++;
 		}
 	}
-	return (str);
+	return (s);
 }
