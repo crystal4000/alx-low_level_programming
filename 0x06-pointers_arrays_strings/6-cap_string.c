@@ -1,29 +1,38 @@
 #include "main.h"
 /**
+ * _indexOf - returns boolean if special  character
+ * @a: character to return
+ * Return: true or false
+ */
+int _indexOf(char a)
+{
+	int i;
+	char capArr[13] = {'\n', '\t', ' ', '.', ',', ';', ',', '!', '?', '(',
+')', '{', '}'};
+
+	for (i = 0; i < 13; i++)
+	{
+		if (capArr[i] == a)
+			return (1);
+	}
+	return (0);
+}
+/**
  * cap_string - capitalizes the string
  * @s: string
  * Return: the string capitalized
  */
-
-char *cap_string(char *str)
+char *cap_string(char *s)
 {
-	int isWordStart = 1;
 	int i;
-	for (i = 0; str[i] != '\0'; i++)
+
+	for (i = 0; s[i] != '\0'; i++)
 	{
-		if (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == ',' || str[i] == ';' || str[i] == '.' || str[i] == '!' || str[i] == '?' || str[i] == '"' || str[i] == '(' || str[i] == ')' || str[i] == '{' || str[i] == '}')
-		{
-			isWordStart = 1;
-		}
-		else if (isWordStart && (str[i] >= 'a' && str[i] <= 'z'))
-		{
-			str[i] = str[i] - 'a' + 'A';
-			isWordStart = 0;
-		}
-		else
-		{
-			isWordStart = 0;
-		}
+		if (_indexOf(s[i]))
+			continue;
+		if (s[i] >= 'a' && s[i] <= 'z' && (_indexOf(s[i - 1]) || i == 0))
+			s[i] = s[i] - 32;
+
 	}
-	return str;
+	return (s);
 }
