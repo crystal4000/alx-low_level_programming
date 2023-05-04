@@ -1,26 +1,34 @@
 #include "main.h"
 /**
  * leet - leet
- * @s: string
+ * @str: string
  *
  * Return: char value
  */
-char *leet(char *s)
+char *leet(char *str)
 {
-	char alphaArr[] = "a4A4e3E3o0O0t7T7l1L1";
+	char *ptr = str;
+	char leetChars[] = {'a', 'A', 'e', 'E', 'o', 'O', 't', 'T', 'l', 'L'};
+	char leetReplacements[] = {'4', '4', '3', '3', '0', '0', '7', '7', '1', '1'};
+	int numLeetChars = sizeof(leetChars) / sizeof(leetChars[0]);
 	int i;
-	int j;
+	int found = 0;
 
-	for (i = 0; s[i] != '\0'; i++)
+	while (*ptr)
 	{
-		for (j = 0; alphaArr[j] != '\0'; j++)
+		for (i = 0; i < numLeetChars; i++)
 		{
-			if (s[i] == alphaArr[j])
+			if (*ptr == leetChars[i])
 			{
-				s[i] = alphaArr[j + 1];
+				*ptr = leetReplacements[i];
+				found = 1;
 				break;
 			}
 		}
+		if (!found)
+		{
+			ptr++;
+		}
 	}
-	return (s);
+	return str;
 }
