@@ -7,6 +7,7 @@
  */
 char *leet(char *str)
 {
+	/*Pointer to the oringinal string*/
 	char *ptr = str;
 	char *leetChars = "aAeEoOtTlL";
 	char *leetReplacements = "4433007711";
@@ -28,6 +29,7 @@ char *leet(char *str)
 			}
 			i++;
 		}
+
 		if (!found)
 		{
 			ptr++;
