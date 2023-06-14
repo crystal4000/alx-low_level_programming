@@ -2,76 +2,102 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * copy_file - Copies the content of one file to another file.
- * @fd_from: File descriptor of the source file.
- * @fd_to: File descriptor of the destination file.
- */
-void copy_file(int fd_from, int fd_to)
-{
-	char buffer[1024];
-	ssize_t bytes_read, bytes_written;
+char *allocate_buffer(char *filename);
+void close_file_descriptor(int fd);
 
-	while ((bytes_read = read(fd_from, buffer, 1024)) > 0)
+/**
+ * allocate_buffer - Allocates a buffer of 1024 bytes.
+ * @filename: The name of the file associated with the buffer.
+ *
+ * Return: A pointer to the allocated buffer.
+ */
+char *allocate_buffer(char *filename)
+{
+	char *buffer;
+
+	buffer = malloc(sizeof(char) * 1024);
+
+	if (buffer == NULL)
 	{
-		bytes_written = write(fd_to, buffer, bytes_read);
-		if (bytes_written == -1 || bytes_written != bytes_read)
-		{
-			dprintf(STDERR_FILENO, "Error: Can't write to file\n");
-			exit(99);
-		}
+		dprintf(STDERR_FILENO,
+			"Error: Can't allocate buffer for %s\n", filename);
+		exit(99);
 	}
 
-	if (bytes_read == -1)
+	return (buffer);
+}
+
+/**
+ * close_file_descriptor - Closes a file descriptor.
+ * @fd: The file descriptor to be closed.
+ */
+void close_file_descriptor(int fd)
+{
+	int result;
+
+	result = close(fd);
+
+	if (result == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file\n");
-		exit(98);
+		dprintf(STDERR_FILENO, "Error: Can't close file descriptor %d\n", fd);
+		exit(100);
 	}
 }
 
 /**
- * main - Program to copy the content of one file to another file.
- * @ac: Argument count.
- * @av: Array of arguments.
+ * main - Copies the content of one file to another file.
+ * @argc: The argument count.
+ * @argv: The array of arguments.
+ *
  * Return: 0 on success.
+ *
+ * Description: If the argument count is incorrect, exit with code 97.
+ * If the source file cannot be read, exit with code 98.
+ * If the destination file cannot be created or written to, exit with code 99.
+ * If there is an error closing file descriptors, exit with code 100.
  */
-int main(int ac, char **av)
+int main(int argc, char *argv[])
 {
-	int fd_from, fd_to;
+	int source_fd, destination_fd, bytes_read, bytes_written;
+	char *buffer;
 
-	if (ac != 3)
+	if (argc != 3)
 	{
 		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
 		exit(97);
 	}
 
-	fd_from = open(av[1], O_RDONLY);
-	if (fd_from == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
-		exit(98);
-	}
+	buffer = allocate_buffer(argv[2]);
+	source_fd = open(argv[1], O_RDONLY);
+	bytes_read = read(source_fd, buffer, 1024);
+	destination_fd = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
 
-	fd_to = open(av[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
-	if (fd_to == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't write to file %s\n", av[2]);
-		exit(99);
-	}
+	do {
+		if (source_fd == -1 || bytes_read == -1)
+		{
+			dprintf(STDERR_FILENO,
+				"Error: Can't read from file %s\n", argv[1]);
+			free(buffer);
+			exit(98);
+		}
 
-	copy_file(fd_from, fd_to);
+		bytes_written = write(destination_fd, buffer, bytes_read);
+		if (destination_fd == -1 || bytes_written == -1)
+		{
+			dprintf(STDERR_FILENO,
+				"Error: Can't write to file %s\n", argv[2]);
+			free(buffer);
+			exit(99);
+		}
 
-	if (close(fd_from) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close file descriptor %d\n", fd_from);
-		exit(100);
-	}
+		bytes_read = read(source_fd, buffer, 1024);
+		destination_fd = open(argv[2], O_WRONLY | O_APPEND);
 
-	if (close(fd_to) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close file descriptor %d\n", fd_to);
-		exit(100);
-	}
+	} while (bytes_read > 0);
+
+	free(buffer);
+	close_file_descriptor(source_fd);
+	close_file_descriptor(destination_fd);
 
 	return (0);
 }
