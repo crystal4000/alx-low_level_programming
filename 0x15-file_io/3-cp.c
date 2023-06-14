@@ -1,71 +1,75 @@
 #include "main.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-#define BUFSIZE 1024
 
 /**
- * error_exit - Prints an error message and exits with the specified code
- * @exit_code: The exit code
- * @message: The error message
+ * copy_file - Copies the content of one file to another file.
+ * @fd_from: File descriptor of the source file.
+ * @fd_to: File descriptor of the destination file.
  */
-void error_exit(int exit_code, const char *message)
+void copy_file(int fd_from, int fd_to)
 {
-	dprintf(STDERR_FILENO, "%s\n", message);
-	exit(exit_code);
-}
+	char buffer[1024];
+	ssize_t bytes_read, bytes_written;
 
-/**
- * cp_file - Copies the content of one file to another
- * @file_from: The source file name
- * @file_to: The destination file name
- */
-void cp_file(const char *file_from, const char *file_to)
-{
-	int fd_from, fd_to, bytes_read, bytes_written;
-	char buffer[BUFSIZE];
-
-	fd_from = open(file_from, O_RDONLY);
-	if (fd_from == -1)
-		error_exit(98, "Error: Can't read from file");
-
-	fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC,
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-	if (fd_to == -1)
-		error_exit(99, "Error: Can't write to file");
-
-	while ((bytes_read = read(fd_from, buffer, BUFSIZE)) > 0)
+	while ((bytes_read = read(fd_from, buffer, 1024)) > 0)
 	{
 		bytes_written = write(fd_to, buffer, bytes_read);
 		if (bytes_written == -1 || bytes_written != bytes_read)
-			error_exit(99, "Error: Can't write to file");
+		{
+			dprintf(STDERR_FILENO, "Error: Can't write to file\n");
+			exit(99);
+		}
 	}
 
 	if (bytes_read == -1)
-		error_exit(98, "Error: Can't read from file");
-
-	if (close(fd_from) == -1)
-		error_exit(100, "Error: Can't close file descriptor");
-
-	if (close(fd_to) == -1)
-		error_exit(100, "Error: Can't close file descriptor");
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file\n");
+		exit(98);
+	}
 }
 
 /**
- * main - Entry point
- * @argc: The number of command-line arguments
- * @argv: An array of command-line argument strings
- *
- * Return: 0 on success, or the corresponding error code on failure
+ * main - Program to copy the content of one file to another file.
+ * @ac: Argument count.
+ * @av: Array of arguments.
+ * Return: 0 on success.
  */
-int main(int argc, char *argv[])
+int main(int ac, char **av)
 {
-	if (argc != 3)
-		error_exit(97, "Usage: cp file_from file_to");
+	int fd_from, fd_to;
 
-	cp_file(argv[1], argv[2]);
+	if (ac != 3)
+	{
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(97);
+	}
+
+	fd_from = open(av[1], O_RDONLY);
+	if (fd_from == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
+		exit(98);
+	}
+
+	fd_to = open(av[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	if (fd_to == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't write to file %s\n", av[2]);
+		exit(99);
+	}
+
+	copy_file(fd_from, fd_to);
+
+	if (close(fd_from) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close file descriptor %d\n", fd_from);
+		exit(100);
+	}
+
+	if (close(fd_to) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close file descriptor %d\n", fd_to);
+		exit(100);
+	}
 
 	return (0);
 }
