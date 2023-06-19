@@ -1,5 +1,5 @@
 section .data
-    hello db "Hello, Holberton", 10 ; 
+    hello db "Hello, Holberton", 10 ;
 
 section .text
     extern printf
